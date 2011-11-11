@@ -1,6 +1,6 @@
 <?php
 /**
- * API_Response
+ * Open Buildings API Response
  * @package    OpenBuildings/openbuildings-api
  * @author     Ivan Kerin
  * @copyright  (c) 2011 OpenBuildings Inc.

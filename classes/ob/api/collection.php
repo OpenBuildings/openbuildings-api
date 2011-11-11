@@ -1,7 +1,7 @@
 <?php
 /**
- * HTML Attributes
- * @package    OpenBuildings/form-builder
+ * Open Buildings API Collection
+ * @package    OpenBuildings/openbuildings-api
  * @author     Ivan Kerin
  * @copyright  (c) 2011 OpenBuildings Inc.
  * @license    http://creativecommons.org/licenses/by-sa/3.0/legalcode

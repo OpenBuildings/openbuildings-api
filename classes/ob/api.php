@@ -1,7 +1,11 @@
 <?php
 /**
-* API to openbuildings
-*/
+ * Open Buildings API Class
+ * @package    OpenBuildings/openbuildings-api
+ * @author     Ivan Kerin
+ * @copyright  (c) 2011 OpenBuildings Inc.
+ * @license    http://creativecommons.org/licenses/by-sa/3.0/legalcode
+ */
 class OB_API
 {
 	static protected $endpoints = array(
