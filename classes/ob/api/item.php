@@ -11,8 +11,9 @@ class OB_API_Item
   protected $_data;
   protected $_endpoint;
   protected $_api;
+  protected $_loaded;
 
-  static public function factory($api, $type, $data)
+  static public function factory(OB_API $api, $type, $data = null)
   {
   	$class = "OB_API_Item_".ucfirst($type);
   	if(class_exists("OB_API_Item_".$type))
@@ -25,7 +26,7 @@ class OB_API_Item
   	}
   }
 
-  public function __construct($api, $type, $data = null) 
+  public function __construct(OB_API $api, $type, $data = null) 
   {
   	$this->_type = $type;
   	$this->_data = (array) $data;
@@ -46,13 +47,14 @@ class OB_API_Item
   {
   	$response = $this->_api->get(OB_API::$endpoints[$this->_type] . '/' . $id);
   	$this->_data = $response->result;
-  	$this->loaded = true;
+  	$this->_loaded = true;
   	return $this;
   }
 
   public function set($data)
   {
-  	$this->_data = $data;
+  	$this->_data = (array) $data;
+    return $this;
   }
 
   public function id()
@@ -60,18 +62,33 @@ class OB_API_Item
   	return isset($this->_data['id']) ? $this->_data['id'] : null;
   }
 
-  public function loaded()
+  public function loaded($loaded = null)
   {
-  	return $this->loaded;
+    if ($loaded !== null) 
+    {
+      $this->_loaded = $loaded;
+      return $this;
+    }
+  	return $this->_loaded;
   }  
 
   public function save()
   {
   	$response = $this->api->post(OB_API::$endpoints[$this->_type].($this->loaded() ? '/' . $this->id() : ''), null, $this->_data);
   	$this->_data = $response->result;
-  	$this->loaded = true;
+  	$this->_loaded = true;
 
   	return $this;
   }
+
+
+  public function clear()
+  {
+    $this->_data = array();
+    $this->_loaded = false;
+
+    return $this;
+  }
+
 
 }

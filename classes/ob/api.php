@@ -31,7 +31,7 @@ class OB_API
 
 	public function __construct($server = null)
 	{
-		$this->server = $server ? $server : Kohana::$config->load('openbuildings-api.server');
+		$this->server = $server ? $server : self::SERVER;
 	}
 
 	public function __destruct()
@@ -79,7 +79,7 @@ class OB_API
   protected function curl_handler($url, $options)
   {
   	$handler = curl_init();
-    curl_setopt($handler, CURLOPT_URL, self::url($url, $options));
+    curl_setopt($handler, CURLOPT_URL, $this->url($url, $options));
     curl_setopt($handler, CURLOPT_RETURNTRANSFER, 1);
     
 
@@ -92,11 +92,11 @@ class OB_API
     return $handler;
   }
 
-  static public function url($url, $options)
+  public function url($url, $options)
   {
   	$options = is_array($options) ? http_build_query($options) : $options;
 
-  	return self::SERVER . $url.'.json?'.$options;
+  	return $this->server . $url.'.json?'.$options;
   }
 
   /**
