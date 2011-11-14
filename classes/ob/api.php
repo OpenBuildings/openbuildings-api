@@ -14,13 +14,13 @@ class OB_API
 		'user' => 'users',
 		'company' => 'companies',
 		'comment' => 'comments',
-    'media' => 'media',
-    'town' => 'towns',
-    'country' => 'countries',
-    'data_field' => 'data_feilds',
+		'media' => 'media',
+		'town' => 'towns',
+		'country' => 'countries',
+		'data_field' => 'data_feilds',
 	);
 
-  const SERVER = "http://openbuildings.com/api-2/";
+	const SERVER = "http://openbuildings.com/api-2/";
 
 	protected $session = null;
 
@@ -51,80 +51,80 @@ class OB_API
 		return $this;
 	}
 
-  public function get($url, $options = null)
-  {
-    $handler = $this->curl_handler($url, $options);
+	public function get($url, $options = null)
+	{
+		$handler = $this->curl_handler($url, $options);
 
-    $response = curl_exec($handler);
-    $code = curl_getinfo($handler, CURLINFO_HTTP_CODE);
-    
-    curl_close($handler);
-    
-    return new OB_API_Response($response, $code);
-  }
+		$response = curl_exec($handler);
+		$code = curl_getinfo($handler, CURLINFO_HTTP_CODE);
+		
+		curl_close($handler);
+		
+		return new OB_API_Response($response, $code);
+	}
 
-  public function post($url, $options, $data)
-  {
-    $handler = $this->curl_handler($url, $options);
+	public function post($url, $options, $data)
+	{
+		$handler = $this->curl_handler($url, $options);
 		curl_setopt($handler, CURLOPT_POSTFIELDS, $data);
-    
-    $response = curl_exec($handler);
-    $code = curl_getinfo($handler, CURLINFO_HTTP_CODE);
-    
-    curl_close($handler);
-    
-    return new OB_API_Response($response, $code);
-  }
+		
+		$response = curl_exec($handler);
+		$code = curl_getinfo($handler, CURLINFO_HTTP_CODE);
+		
+		curl_close($handler);
+		
+		return new OB_API_Response($response, $code);
+	}
 
-  protected function curl_handler($url, $options)
-  {
-  	$handler = curl_init();
-    curl_setopt($handler, CURLOPT_URL, $this->url($url, $options));
-    curl_setopt($handler, CURLOPT_RETURNTRANSFER, 1);
-    
+	protected function curl_handler($url, $options)
+	{
+		$handler = curl_init();
+		curl_setopt($handler, CURLOPT_URL, $this->url($url, $options));
+		curl_setopt($handler, CURLOPT_RETURNTRANSFER, 1);
+		
 
-    if($this->session)
-    {
-	    curl_setopt($handler, CURLOPT_COOKIEJAR, $this->session);
-	    curl_setopt($handler, CURLOPT_COOKIEFILE, $this->session);
-    }
+		if($this->session)
+		{
+			curl_setopt($handler, CURLOPT_COOKIEJAR, $this->session);
+			curl_setopt($handler, CURLOPT_COOKIEFILE, $this->session);
+		}
 
-    return $handler;
-  }
+		return $handler;
+	}
 
-  public function url($url, $options)
-  {
-  	$options = is_array($options) ? http_build_query($options) : $options;
+	public function url($url, $options)
+	{
+		$options = is_array($options) ? http_build_query($options) : $options;
 
-  	return $this->server . $url.'.json?'.$options;
-  }
+		return $this->server . $url.'.json?'.$options;
+	}
 
-  /**
-   * HELPER METHODS
-   * ======================================================
-   */
+	/**
+	 * HELPER METHODS
+	 * ======================================================
+	 */
 
-  public function item($type, $id, $options = null)
-  {
-  	if( ! isset(self::$endpoints[$type]))
-  		throw new Kohana_Exception("Invalid type :type must be one of :types", array(":type" => $type, ":types" => join(', ', array_keys(self::$endpoints))));
+	public function item($type, $id, $options = null)
+	{
+		if( ! isset(self::$endpoints[$type]))
+			throw new Kohana_Exception("Invalid type :type must be one of :types", array(":type" => $type, ":types" => join(', ', array_keys(self::$endpoints))));
 
-  	if( ! is_numeric($id))
-  		throw new Kohana_Exception("Id must be numeric for :type", array(":type" => $type));
+		if( ! is_numeric($id))
+			throw new Kohana_Exception("Id must be numeric for :type", array(":type" => $type));
 
-  	$response = $this->get(self::$endpoints[$type].'/'.$id, $options);
+		$response = $this->get(self::$endpoints[$type].'/'.$id, $options);
 
-  	return OB_API_Item::factory($this, $type, $response->result);
-  }
+		return OB_API_Item::factory($this, $type, $response->result);
+	}
 
-  public function listing($type, $options = null)
-  {
-  	if( array_search($type, self::$endpoints) === FALSE)
-  		throw new Kohana_Exception("Invalid type :type must be one of :types", array(":type" => $type, ":types" => join(', ', array_values(self::$endpoints))));
+	public function listing($type, $options = null)
+	{
+		if( array_search($type, self::$endpoints) === FALSE)
+			throw new Kohana_Exception("Invalid type :type must be one of :types", array(":type" => $type, ":types" => join(', ', array_values(self::$endpoints))));
 
-  	$response = $this->get($type, $options);
+		$response = $this->get($type, $options);
 
-  	return new OB_API_Collection($this, array_search($type, self::$endpoints), $response->result, $response->total);
-  }
+		return new OB_API_Collection($this, array_search($type, self::$endpoints), $response->result, $response->total);
+	}
 
 }
